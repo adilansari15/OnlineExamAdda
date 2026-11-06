@@ -1,0 +1,8 @@
+package com.examadda.entity;
+
+public enum AttemptStatus {
+    IN_PROGRESS,
+    SUBMITTED,
+    AUTO_SUBMITTED
+}
+

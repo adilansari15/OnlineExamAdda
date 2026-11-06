@@ -1,0 +1,165 @@
+@import "@fontsource/manrope/600.css";
+@import "@fontsource/manrope/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/600.css";
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light theme support */
+  --color-bg: #F5F5F5;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EEEEEE;
+  --color-surface-hover: #E4E4E4;
+  --color-border: #D8D8D8;
+  --color-border-strong: #B0B0B0;
+  --color-text: #111111;
+  --color-muted: #626262;
+  --color-silver: #4A4A4A;
+  --color-primary: #111111;
+  --color-primary-fg: #FFFFFF;
+  --color-accent: #111111;
+  --color-accent-fg: #FFFFFF;
+  --color-ring: #111111;
+
+  /* Semantic exam states - Light */
+  --color-success: #E8F5EC;
+  --color-success-fg: #1E6B37;
+  --color-success-border: #C2E2CC;
+
+  --color-warning: #FCF5E5;
+  --color-warning-fg: #8A6414;
+  --color-warning-border: #EED8A7;
+
+  --color-error: #FDF0F0;
+  --color-error-fg: #9C2B2B;
+  --color-error-border: #F3C4C4;
+
+  --color-review: #F2F1FA;
+  --color-review-fg: #5B4E99;
+  --color-review-border: #D5D1EB;
+
+  /* Shadows & Gloss */
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.dark {
+  /* Dark theme — Premium Monochrome Gloss (Default / Primary Experience) */
+  --color-bg: #090909;            /* color-black: Main dark background */
+  --color-surface: #171717;       /* color-charcoal: Primary cards */
+  --color-surface-2: #202020;     /* color-charcoal-raised */
+  --color-surface-hover: #2B2B2B; /* color-graphite */
+  --color-border: #383838;        /* color-border */
+  --color-border-strong: #505050; /* color-border-strong */
+  --color-text: #EAEAEA;          /* color-off-white: Main body text */
+  --color-muted: #777777;         /* color-steel: Muted metadata */
+  --color-silver: #BDBDBD;        /* color-silver: Secondary text */
+  --color-primary: #FFFFFF;       /* color-white: Headings & primary actions */
+  --color-primary-fg: #090909;    /* Pure black on white */
+  --color-accent: #FFFFFF;
+  --color-accent-fg: #090909;
+  --color-ring: #BDBDBD;
+
+  /* Semantic exam states - Dark (Exact from latest-theme.md Section 2) */
+  --color-success: #1D2922;
+  --color-success-fg: #A9D5B5;
+  --color-success-border: #2D3D32;
+
+  --color-warning: #302B22;
+  --color-warning-fg: #E0C995;
+  --color-warning-border: #4D4233;
+
+  --color-error: #2D1D1D;
+  --color-error-fg: #E3AAAA;
+  --color-error-border: #482D2D;
+
+  --color-review: #25252B;
+  --color-review-fg: #C5C5D5;
+  --color-review-border: #3E3E4B;
+
+  /* Subtle gloss highlight & shadow */
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.24);
+  --shadow-raised: 0 12px 30px rgba(0, 0, 0, 0.28);
+  --highlight-top: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-hover: var(--color-surface-hover);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-text: var(--color-text);
+  --color-muted: var(--color-muted);
+  --color-silver: var(--color-silver);
+  --color-primary: var(--color-primary);
+  --color-primary-fg: var(--color-primary-fg);
+  --color-accent: var(--color-accent);
+  --color-accent-fg: var(--color-accent-fg);
+  --color-success: var(--color-success-fg);
+  --color-warning: var(--color-warning-fg);
+  --color-error: var(--color-error-fg);
+  --color-review: var(--color-review-fg);
+  --color-ring: var(--color-ring);
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Manrope", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-card: 14px;
+  --radius-panel: 16px;
+  --radius-pill: 9999px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+/* Gloss card utility */
+.card-gloss {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card), var(--highlight-top);
+  border-radius: 14px;
+}
+
+.card-gloss-raised {
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-raised), var(--highlight-top);
+  border-radius: 14px;
+}
+
+/* Subtle scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+

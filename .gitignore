@@ -1,0 +1,174 @@
+# env / secrets
+.env
+.env.*
+!.env.example
+# backend
+backend/target/
+*.class
+*.log
+.mvn/wrapper/maven-wrapper.jar
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+# local agent scratch
+.gemini/
+
+
+
+# ==========================================
+# ENVIRONMENT VARIABLES & SECRETS
+# ==========================================
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.p12
+*.jks
+secrets/
+credentials/
+
+# ==========================================
+# JAVA / MAVEN BACKEND
+# ==========================================
+backend/target/
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+
+# Gradle (if used)
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ==========================================
+# FRONTEND (NODE / REACT / VITE)
+# ==========================================
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+node_modules/
+dist/
+coverage/
+.vite/
+.next/
+.nuxt/
+.output/
+.turbo/
+.parcel-cache/
+.eslintcache
+*.tsbuildinfo
+
+# Package manager logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# DATABASE / LOCAL DATA
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+*.mdb
+*.sql~
+database/data/
+database/backups/
+db_backups/
+*.dump
+*.bak
+
+# ==========================================
+# IDE / EDITORS
+# ==========================================
+.idea/
+.vscode/
+*.iml
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*.swo
+*~
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/private/
+
+# ==========================================
+# OPERATING SYSTEM
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# TESTING & REPORTS
+# ==========================================
+test-results/
+playwright-report/
+.nyc_output/
+junit.xml
+surefire-reports/
+failsafe-reports/
+
+# ==========================================
+# LOCAL AGENT / AI SCRATCH
+# ==========================================
+.gemini/
+.cursor/
+.claude/
+.aider*
+.agent/
+.ai/
+*.prompt.local
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+tmp/
+temp/
+.cache/
+*.tmp
+*.bak
+*.old
+*.orig
+*.swp
+
+# ==========================================
+# DOCUMENTATION / GENERATED OUTPUT
+# ==========================================
+generated/
+exports/
+uploads/
+*.local

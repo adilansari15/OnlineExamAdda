@@ -1,0 +1,125 @@
+# CHANGELOG
+Keep a Changelog style. Newest first.
+
+## [Unreleased]
+### Changed
+- **Modern Flat UI Theme Overhaul (Zero Gradients):**
+  - Revamped theme tokens in `frontend/src/index.css` and `docs/THEME.md`: Crisp Slate-50 background (`#F8FAFC`), pure white surface (`#FFFFFF`), solid Slate-900 primary (`#0F172A`), and vibrant electric Indigo accent (`#4F46E5` / `#6366F1`) with true charcoal dark mode (`#090D16`).
+  - Strictly eliminated all gradient patterns in favor of clean, solid modern fills with crisp hairline borders (`border-border/80`).
+  - Modernized `Button.jsx`: taller touch heights (`h-8`, `h-10`, `h-11.5`), refined `rounded-lg`, subtle active scale (`active:scale-[0.99]`), and crisp solid variants (`primary`, `accent`, `secondary`, `outline`, `ghost`).
+  - Refined `Card.jsx` and `StatCard.jsx`: solid tinted icon badges (`bg-accent/10 text-accent`), bold tabular statistics, clean trend badges, and subtle hover borders.
+  - Enhanced `Input.jsx`, `Select.jsx`, and `SearchInput.jsx`: `h-10` heights, `rounded-lg`, crisp focus rings (`focus-visible:ring-accent/15 focus-visible:border-accent`).
+  - Overhauled `StudentLayout.jsx` & `AdminLayout.jsx`: modern Linear-style navigation with solid tint active state, accent indicator bar, updated brand badges, and user profile cards.
+  - Modernized `Modal.jsx`, `Badge.jsx`, `ThemeToggle.jsx`, `PageHeader.jsx`, `Overview.jsx`, and `AdminDashboard.jsx`.
+  - 46 / 46 Vitest tests passing, 0 ESLint warnings, clean Vite production build.
+- **Database: MySQL 8 → Supabase (PostgreSQL)**
+  - Rewrote `V1__init_schema.sql` for PostgreSQL (`BIGSERIAL` auto-increment, `TIMESTAMP` columns, `SMALLINT` for position, removed `ENGINE=InnoDB` / `CHARSET` / `AUTO_INCREMENT` MySQL-specific clauses).
+  - Updated `V2__seed_reference_data.sql`: `UTC_TIMESTAMP(3)` → `NOW()`.
+  - Replaced `com.mysql:mysql-connector-j` with `org.postgresql:postgresql` in `pom.xml`.
+  - Removed `flyway-mysql` artifact (Flyway core supports PostgreSQL natively).
+  - Swapped `testcontainers:mysql` → `testcontainers:postgresql` in test scope.
+  - Updated `application.yml`: `org.postgresql.Driver`, `PostgreSQLDialect`, PostgreSQL default JDBC URL.
+  - Removed local MySQL service from `docker-compose.yml`; backend connects to external Supabase via env vars `DB_URL` / `DB_USERNAME` / `DB_PASSWORD`.
+  - Updated `.env.example` and `.env` templates to PostgreSQL/Supabase format.
+### Added
+- **Phases 5, 6 & 7 (Exam Engine, Results, Analytics & Containerization — Full Platform Release):**
+  - **Live Exam Engine (Phase 5):**
+    - Implemented `ExamAttemptService` and `ExamAttemptController` handling attempt initiation (`POST /api/quizzes/{id}/attempts`) with question randomization & answer pre-population, attempt state hydration (`GET /api/attempts/{id}`) strictly concealing answer keys and explanations, and live duration calculations with injected `Clock`.
+    - Implemented instantaneous autosave (`PUT /api/attempts/{id}/answers/{questionId}`) with option validation and a 3-second grace window after expiry.
+    - Implemented background `@Scheduled` task `AttemptExpiryScheduler` to close expired sessions with `AUTO_SUBMITTED`.
+    - Implemented idempotent submit endpoint (`POST /api/attempts/{id}/submit`) with server-authoritative scoring, negative marking calculation, accuracy percentage, and atomic persistence.
+    - Built distraction-free frontend `ExamScreen` with live ticking countdown, periodic 45-second server sync, 4-option radio selection, mark-for-review toggle, question palette with status indicators (visited/answered/marked), autosave status pills, and submit modal with statistics.
+  - **Results, Review & Analytics (Phase 6):**
+    - Implemented `ResultService` and `ResultController` providing detailed student scorecards and question-by-question review with explanations and option badges (`GET /api/attempts/{id}/result`).
+    - Implemented student attempt history endpoint (`GET /api/me/attempts`) with pagination.
+    - Implemented student performance analytics endpoint (`GET /api/me/performance`) computing overall accuracy, average percentage, category mastery matrix, and attempt score trends.
+    - Implemented admin result monitor (`GET /api/admin/results`) with quiz filtering and paginated submission logs.
+    - Built frontend `ResultDashboard`, `MyAttempts`, `Performance`, and `AdminResults` views.
+  - **Containerization & Deployment (Phase 7):**
+    - Created multi-stage `backend/Dockerfile` with Temurin 21 JDK + JRE and container RAM optimization.
+    - Created multi-stage `frontend/Dockerfile` with Vite bundle builder and Alpine Nginx server with SPA fallback & API proxying (`frontend/nginx.conf`).
+    - Created `docker-compose.yml` orchestrating MySQL 8 (with healthchecks), backend, and frontend containers.
+  - **Verification:**
+    - 44 / 44 backend integration tests passing (`ExamEngineIntegrationTest`, `StudentQuizIntegrationTest`, `AdminDashboardStudentIntegrationTest`, `QuizAdminIntegrationTest`, `QuestionAdminIntegrationTest`, `CategorySubjectIntegrationTest`, `AuthIntegrationTest`, `HealthControllerTest`, `RepositorySmokeTest`).
+    - 46 / 46 frontend vitest tests passing (`ExamAndResults.test.jsx`, `StudentExperience.test.jsx`, `AdminDashboardAndStudents.test.jsx`, `AdminQuizzes.test.jsx`, `AdminQuestions.test.jsx`, `AdminCategories.test.jsx`, `RouteGuards.test.jsx`, `Layouts.test.jsx`, `UIComponents.test.jsx`, `AuthContext.test.jsx`, `ThemeContext.test.jsx`).
+    - 0 ESLint warnings (`npm run lint`), successful production build (`npm run build`). Milestones M3, M4, and M5 completed.
+- **Phase 4 (Student Experience — Consolidated):**
+  - Implemented `StudentQuizCardResponse`, `StudentQuizDetailResponse`, `StudentDashboardResponse`, `UserProfileRequest`, and `UserProfileResponse` DTOs.
+  - Implemented `StudentQuizService` with `GET /api/quizzes` (published only, text search `q`, category and difficulty filters, custom sort, and max 50 page size).
+  - Implemented `GET /api/quizzes/{id}` returning instructions, marking parameters, attempts used, `canAttempt` restrictions, and strictly concealing questions, options, and answers before exam start for security integrity.
+  - Implemented zero-safe Student Dashboard aggregation (`GET /api/me/dashboard`) returning stats, continue learning active sessions, recommended quizzes, upcoming scheduled exams, and recent activity log.
+  - Implemented Profile and Password endpoints (`GET/PUT /api/me/profile`, `PUT /api/me/password`).
+  - Built frontend `studentService.js`, interactive `ExploreQuizzes` page with curriculum category chips and search, `QuizDetail` page with guidelines and start verification, `Overview` student dashboard with motivational banner, KPI StatCards and recommended modules, and `Profile` page with profile editing and password update.
+  - Added backend integration test `StudentQuizIntegrationTest` and frontend Vitest suite `StudentExperience.test.jsx`. Verified with 43 passing backend tests, 40 passing frontend tests, clean ESLint, and clean production build.
+- **Sub-part 3D (Students management, admin dashboard, settings — Milestone M2):**
+  - Implemented `StudentSummaryResponse`, `StudentDetailResponse`, `StudentStatusRequest`, `PasswordChangeRequest`, and `AdminDashboardResponse` DTOs.
+  - Implemented `AdminUserService` with student listing (`GET /api/admin/students`), dynamic search by name/email, enabled status filter, student profile retrieval (`GET /api/admin/students/{id}`), and account enable/disable status toggle (`PATCH /api/admin/students/{id}/status`).
+  - Enforced security: disabled student accounts are rejected on login with 403 `FORBIDDEN` ("Account is disabled. Please contact the administrator.").
+  - Implemented live Admin Dashboard metrics aggregation (`GET /api/admin/dashboard`) returning live counts of students, quizzes (published & draft), question bank questions, active categories, and recent platform events.
+  - Implemented administrator password change endpoint (`PUT /api/admin/settings/password`) with current password verification against BCrypt hash and strong new password validation.
+  - Built frontend `adminService.js`, responsive `AdminDashboard` with live KPI tiles, quick actions, and recent activity log, `AdminStudents` management page with paginated table, search, status filter, student profile modal, and status toggle confirmation dialog, and `AdminSettings` with password update form and theme selector.
+  - Added backend integration test `AdminDashboardStudentIntegrationTest` and frontend Vitest suite `AdminDashboardAndStudents.test.jsx`. Verified with 38 passing backend tests, 33 passing frontend tests, 0 lint warnings, and clean production build. Reached Milestone M2.
+- **Sub-part 3C (Quizzes and question assignment):**
+  - Implemented `QuizRequest`, `QuizQuestionItemRequest`, `QuizQuestionsAssignRequest`, and `QuizResponse` DTOs.
+  - Implemented Quiz CRUD with status management (`DRAFT`, `PUBLISHED`, `ARCHIVED`) and schedule window validation.
+  - Implemented ordered question assignment (`PUT /api/admin/quizzes/{id}/questions`) with optional per-question marks and negative score overrides and automatic recalculation of `total_marks`.
+  - Implemented publish validation enforcing at least 1 question assigned, duration > 0, and valid schedule window.
+  - Enforced exam integrity rules: modifying question assignment, changing marking parameters, or deleting a quiz that has existing student attempts is blocked with 409 `QUIZ_LOCKED`.
+  - Built interactive `AdminQuizzes` page with KPI tiles, filter toolbar, and full Quiz Builder modal (Settings tab + Question Assignment tab with Up/Down reordering, question deletion, and Question Bank Picker dialog).
+  - Added frontend `quizService.js` and Vitest suite `AdminQuizzes.test.jsx`. Verified with 33 passing backend tests, 27 passing frontend tests, 0 lint warnings, and production build.
+- **Sub-part 3B (Question bank API & UI):**
+  - Implemented `QuestionRequest`, `OptionRequest`, `QuestionResponse`, and `OptionResponse` DTOs.
+  - Implemented custom option validator in `QuestionService` enforcing exactly 4 options per question and exactly 1 marked as correct.
+  - Implemented Question CRUD with dynamic specification querying (`q` text search, `subjectId`, `difficulty`, and pagination).
+  - Enforced exam integrity rules: changing the answer key or deleting a question included in a quiz that has attempts is blocked with 409 `QUIZ_LOCKED`.
+  - Built interactive `AdminQuestions` page featuring KPI stats, filter toolbar, paginated questions table, Create/Edit Question Modal with 4-option radio selector, and Question Preview Dialog.
+  - Added frontend `questionService.js` and Vitest suite `AdminQuestions.test.jsx`. Verified with 27 passing backend tests, 23 passing frontend tests, clean lint, and production build.
+- **Sub-part 3A (Categories and subjects API & UI):**
+  - Implemented `CategoryService` and `CategoryAdminController` supporting CRUD, automatic kebab-case slug generation, name uniqueness validation (409 CONFLICT), and delete protection blocking deletion when referenced by subjects or quizzes (409 CONFLICT).
+  - Implemented public `CategoryController` (`GET /api/categories`) returning active curriculum categories.
+  - Implemented `SubjectService` and `SubjectAdminController` supporting CRUD, scoped unique names within parent categories (409 CONFLICT), and delete protection blocking deletion when referenced by questions (409 CONFLICT).
+  - Configured `SecurityConfig` to permit public reading of `/api/categories` while restricting `/api/admin/categories` and `/api/admin/subjects` to `ROLE_ADMIN`.
+  - Built full interactive `AdminCategories` page with KPI stats, category table, search filtering, create/edit modal dialog, delete confirmation dialog with conflict feedback, and nested subject management modal.
+  - Added frontend `categoryService.js` and Vitest suite `AdminCategories.test.jsx`. Verified with 21 passing backend tests, 19 passing frontend tests, 0 lint warnings, and clean production build.
+- **Sub-part 2B (Frontend auth and route guards):**
+  - Implemented `AuthContext` managing authentication state, token storage in `localStorage`, login, register, logout, and initial session bootstrap from `GET /api/auth/me`.
+  - Updated Axios interceptor in `src/services/api.js` to dispatch `auth:unauthorized` custom event on unexpected 401s, cleanly clearing sessions without hard page reloads.
+  - Implemented client-side route guards: `ProtectedRoute` (requires authenticated user), `RoleRoute` (enforces role check, redirects forbidden users to `/unauthorized`), and `PublicOnlyRoute` (redirects logged-in users away from auth forms).
+  - Built `Unauthorized` (403 forbidden) view with back button and dashboard redirection.
+  - Connected `Login` and `Register` views to `useAuth()` with responsive error displays and inline feedback.
+  - Integrated dynamic user info (full name, email, avatar placeholder) and functioning logout button across `StudentLayout` and `AdminLayout`.
+  - Added test suites for `AuthContext.test.jsx` and `RouteGuards.test.jsx`. Verified with 15 passing Vitest tests, clean ESLint, and production build.
+- **Sub-part 2A (Backend auth and security):**
+  - Configured Spring Security 6 with stateless JWT authentication filter (`JwtAuthFilter`), HS256 signing via JJWT, and `CustomUserDetailsService`.
+  - Enforced BCrypt password hashing and user enable-status validation.
+  - Implemented `DelegatedAuthenticationEntryPoint` and `DelegatedAccessDeniedHandler` converting security exceptions into standard JSON error envelopes (`UNAUTHORIZED`, `ACCESS_DENIED`).
+  - Implemented authentication endpoints in `AuthController`: `POST /api/auth/register` (student self-registration, duplicate email prevention), `POST /api/auth/login` (generic error messages on failure), and `GET /api/auth/me` (authenticated user profile retrieval).
+  - Implemented role-based authorization restricting `/api/admin/**` exclusively to `ROLE_ADMIN`.
+  - Created 10 integration test cases in `AuthIntegrationTest` verifying successful flows, validation errors, duplicate registrations, invalid credentials, tampered/expired tokens, and role-based access denial. All 14 backend tests passing.
+- **Sub-part 1C (Frontend init, theme, layouts, UI kit):**
+  - Scaffolded Vite + React 18 frontend with Tailwind CSS v4 (`@tailwindcss/vite`), React Router DOM, Axios, Lucide React, and Recharts.
+  - Implemented design tokens in `src/index.css` supporting light and dark modes per `docs/THEME.md` with zero raw hex colors.
+  - Implemented persistent `ThemeContext` supporting light/dark/system modes synced to `<html>` class.
+  - Implemented Axios service client in `src/services/api.js` with Bearer token injection, envelope unwrapping, and normalized error mapping.
+  - Created shared UI kit: `Button`, `Input`, `Select`, `Card`, `Badge` (with difficulty tints), `Modal`, `ConfirmDialog`, `Skeleton`, `EmptyState`, `ErrorState`, `Toast` (with `ToastContext`), `Pagination`, `StatCard`, `PageHeader`, `SearchInput`, and `ThemeToggle`.
+  - Built 4 layout shells: `StudentLayout` (256px collapsible sidebar & header), `AdminLayout` (admin navigation), `AuthLayout` (centered card with branding), and `ExamLayout` (distraction-free with sticky header).
+  - Scaffolded `AppRoutes` and placeholder pages across public, student, and admin views.
+  - Verified with 8 passing Vitest unit tests, clean ESLint (`npm run lint`), and successful production build (`npm run build`).
+- **Sub-part 1B (Database schema, Flyway, entities):**
+  - Created Flyway migration `V1__init_schema.sql` defining 12 core tables (`users`, `roles`, `user_roles`, `categories`, `subjects`, `questions`, `question_options`, `quizzes`, `quiz_questions`, `exam_attempts`, `student_answers`, `results`) with foreign keys, unique constraints, and indexes.
+  - Created Flyway migration `V2__seed_reference_data.sql` seeding standard roles (`ROLE_STUDENT`, `ROLE_ADMIN`), 12 educational categories, and introductory subjects.
+  - Implemented JPA entities and enums (`Difficulty`, `QuizStatus`, `AttemptStatus`, `RoleType`) extending `BaseEntity` with JPA auditing.
+  - Implemented Spring Data JPA repositories for all entities.
+  - Added `DataInitializer` to automatically seed the platform administrator account on startup from `ADMIN_EMAIL` and `ADMIN_PASSWORD` with BCrypt encryption.
+  - Implemented `RepositorySmokeTest` verifying Flyway schema application, `ddl-auto=validate` compliance, seed data integrity, and CRUD persistence across User, Category, Question, and Quiz.
+- **Sub-part 1A (Backend init):**
+  - Configured Spring Boot 3.4.3 backend with Java 21 and Maven wrapper (`backend/pom.xml`, `mvnw`, `mvnw.cmd`).
+  - Added dependencies for Web, Security, Data JPA, Validation, MySQL Connector, Flyway, JJWT 0.12.6, SpringDoc OpenAPI 2.8.5, and Testcontainers.
+  - Configured `application.yml`, `application-dev.yml`, and `application-prod.yml` with environment-based properties (`ddl-auto=validate`, UTC timezone).
+  - Implemented `AppConfig` with injected `java.time.Clock` bean, `CorsConfig` reading from environment variables, and `JpaAuditingConfig`.
+  - Implemented baseline `SecurityConfig` with stateless sessions, CSRF disabled, and open endpoints for 1A.
+  - Implemented standard response envelopes: `ApiResponse<T>`, `PageResponse<T>`, `ErrorResponse`, and `ErrorCode` enum.
+  - Implemented typed exceptions (`ApiException`, `ResourceNotFoundException`, `ConflictException`, etc.) and `GlobalExceptionHandler`.
+  - Implemented `GET /api/health` in `HealthController` returning standard envelope.
+  - Verified live MySQL connection, database initialization, and passing unit/integration tests (`HealthControllerTest`, `ExamAddaApplicationTests`).
+- Project scaffolding, agent rules, docs.
