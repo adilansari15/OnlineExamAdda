@@ -87,15 +87,15 @@ export default function MyAttempts() {
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-surface-2 border-b border-border text-muted uppercase tracking-wider">
+            <thead className="bg-surface-2 dark:bg-[#202020] border-b border-border dark:border-[#303030] text-silver uppercase tracking-wider">
               <tr>
-                <th className="py-3 px-4 font-medium">Examination</th>
-                <th className="py-3 px-4 font-medium">Attempt</th>
-                <th className="py-3 px-4 font-medium">Score</th>
-                <th className="py-3 px-4 font-medium">Percentage</th>
-                <th className="py-3 px-4 font-medium">Time Taken</th>
-                <th className="py-3 px-4 font-medium">Date</th>
-                <th className="py-3 px-4 font-medium text-right">Action</th>
+                <th className="py-3 px-4 font-semibold">Examination</th>
+                <th className="py-3 px-4 font-semibold">Attempt</th>
+                <th className="py-3 px-4 font-semibold">Score</th>
+                <th className="py-3 px-4 font-semibold">Percentage</th>
+                <th className="py-3 px-4 font-semibold">Time Taken</th>
+                <th className="py-3 px-4 font-semibold">Date</th>
+                <th className="py-3 px-4 font-semibold text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">
@@ -110,14 +110,14 @@ export default function MyAttempts() {
               ) : attempts.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-16 text-center text-muted">
-                    <History className="w-10 h-10 mx-auto mb-2 opacity-40" />
+                    <History className="w-10 h-10 mx-auto mb-2 opacity-40 text-silver" />
                     <p className="font-semibold text-text text-sm">No exam attempts yet</p>
-                    <p className="text-xs text-muted mt-1 max-w-sm mx-auto">
+                    <p className="text-xs text-silver mt-1 max-w-sm mx-auto">
                       You haven’t completed any quizzes yet. Explore topics and start your first exam!
                     </p>
                     <div className="mt-4">
                       <Link to="/app/quizzes">
-                        <Button variant="accent" size="sm" rightIcon={<BookOpen className="w-3.5 h-3.5" />}>
+                        <Button variant="primary" size="sm" rightIcon={<BookOpen className="w-3.5 h-3.5" />}>
                           Start an Exam
                         </Button>
                       </Link>
@@ -128,8 +128,8 @@ export default function MyAttempts() {
                 attempts.map((item) => (
                   <tr key={item.attemptId} className="hover:bg-surface-2/40 transition-colors">
                     <td className="py-3.5 px-4">
-                      <p className="font-semibold text-text text-sm">{item.quizTitle}</p>
-                      <span className="text-[11px] text-accent font-medium uppercase tracking-wider">
+                      <p className="font-semibold text-text text-sm font-display">{item.quizTitle}</p>
+                      <span className="text-[10px] text-silver font-semibold uppercase tracking-wider">
                         {item.categoryName}
                       </span>
                     </td>
@@ -137,8 +137,8 @@ export default function MyAttempts() {
                       Attempt #{item.attemptNo}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="font-bold text-text flex items-center gap-1">
-                        <Award className="w-3.5 h-3.5 text-accent" />
+                      <span className="font-bold text-text flex items-center gap-1 tabular-nums">
+                        <Award className="w-3.5 h-3.5 text-silver" />
                         {item.obtainedMarks} / {item.totalMarks}
                       </span>
                     </td>
@@ -148,8 +148,8 @@ export default function MyAttempts() {
                       </Badge>
                     </td>
                     <td className="py-3.5 px-4 text-muted">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-muted" />
+                      <span className="flex items-center gap-1 tabular-nums">
+                        <Clock className="w-3 h-3 text-silver" />
                         {Math.floor((item.timeTakenSeconds || 0) / 60)}m {(item.timeTakenSeconds || 0) % 60}s
                       </span>
                     </td>
@@ -159,11 +159,11 @@ export default function MyAttempts() {
                     <td className="py-3.5 px-4 text-right">
                       {item.status === 'IN_PROGRESS' ? (
                         <Link to={`/exam/${item.attemptId}`}>
-                          <Button variant="accent" size="sm">Resume</Button>
+                          <Button variant="primary" size="sm">Resume</Button>
                         </Link>
                       ) : (
                         <Link to={`/app/attempts/${item.attemptId}/result`}>
-                          <Button variant="ghost" size="sm" className="text-accent hover:text-accent font-medium">
+                          <Button variant="ghost" size="sm" className="text-silver hover:text-white font-medium">
                             View Result <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </Button>
                         </Link>
